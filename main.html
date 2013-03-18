@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>le markdown</title>
+  <link rel="stylesheet" href="css/base.css">
+</head>
+<body>
+  <section id='le-markdown-app'>
+    <header id='header'>
+      <h1>le markdown</h1>
+    </header>
+    <section id='documents'>
+      <button class='standard' id='new-document'>NEW</button>
+      <ul id='document-list'></ul>
+    </section>
+    <section id='document'>
+    </section>
+  </section>
+  <footer id='footer'>
+    <div id='info'>
+      <p>version 0.1</p>
+      <p>&copy; Ronald Suwandi 2013</p>
+    </div>
+  </footer>
+
+  <!-- template for document listing -->
+  <script type='text/template' id='document-item-template'>
+    <div class='view'>
+      <div class='clickable'>
+        <label><%= title %></label>
+        <label id='modified-date'></label>
+      </div>
+      <button class='destroy'></button>
+    </div>
+  </script>
+
+  <!-- document view/edit template - uses markdown to render -->
+  <script type='text/template' id='document-template'>
+    <div id='document-view'>
+      <span class='clickable' title='Double click to edit'>
+        <div class='title'>
+          <label id='title'><%= title %></label><br/>
+          <label id='modified-date'></label>
+        </div>
+        <div class='content'>
+          <label id='content'></label><br/>
+        </div>
+      </span>
+      <button class='standard' id='back'>BACK</button>
+    </div>
+    <div id='document-edit'>
+      <input id='edit-title' value="<%= title %>"></input><br/>
+      <textarea id='edit-content'><%= content %></textarea><br/>
+      <div id='document-edit-operations'>
+        <button class='standard' id='cancel'>CANCEL</button>
+        <button class='standard' id='save'>SAVE</button>
+      </div>
+    </div>
+  </script>
+
+  <script src='js/lib/jquery-1.9.1.js'></script>
+  <script src='js/lib/underscore.min.js'></script>
+  <script src='js/lib/backbone-0.9.9.js'></script>
+  <script src='js/lib/backbone.localStorage.js'></script>
+  <script src='js/lib/Markdown.Converter.js'></script>
+  <script src="js/models/document.js"></script>
+  <script src="js/collections/documents.js"></script>
+  <script src="js/views/documents.js"></script>
+  <script src="js/views/document.js"></script>
+  <script src="js/views/app.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
