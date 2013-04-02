@@ -6,7 +6,8 @@ var DocumentList = Backbone.Collection.extend({
   model: app.Document,
 
   // Save all document under lemarkdown-documents namespace
-  localStorage: new Backbone.LocalStorage('lemarkdown-documents')
+  // localStorage: new Backbone.LocalStorage('lemarkdown-documents')
+  url: '/api/files'
 });
 
 

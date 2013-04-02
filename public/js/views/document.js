@@ -14,6 +14,12 @@ app.DocumentView = Backbone.View.extend({
   },
 
   initialize: function () {
+    this.model.fetch().done(function () {
+      console.log('DERP');
+      console.log(this);
+      console.log(this.model);
+    })
+
     // re-render on change
     this.model.on('change', this.render,this);
     this.render();
@@ -42,7 +48,7 @@ app.DocumentView = Backbone.View.extend({
     // by setting the modified date, even though the content of the 
     // model is the same, the date modified is chagned, thus re-render
     // will occur
-    this.model.set({dateModified: new Date()});
+    this.model.set({modifiedDate: new Date()});
     this.model.save();
   },
 
@@ -52,6 +58,7 @@ app.DocumentView = Backbone.View.extend({
   },
 
   render: function () {
+    console.log(this.model);
     var modelJSON = this.model.toJSON();
     this.$el.html(this.template(modelJSON));
     this.$el.removeClass('hidden');

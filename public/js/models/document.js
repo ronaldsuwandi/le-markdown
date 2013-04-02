@@ -6,6 +6,7 @@ app.Document = Backbone.Model.extend({
   defaults: {
     title: 'untitled',
     modifiedDate: new Date(),
+    path: '',
     content: ''
   }
 });

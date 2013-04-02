@@ -19,6 +19,7 @@ app.DocumentTitleView = Backbone.View.extend({
 
   render: function () {
     var modelJSON = this.model.toJSON();
+    // console.log(modelJSON);
     this.$el.html(this.template(modelJSON));
     // render modified date separately
     this.$('#modified-date').html(app.formatDate(modelJSON.modifiedDate));
@@ -58,6 +59,8 @@ app.DocumentListView = Backbone.View.extend({
   },
 
   render: function () {
+    console.log('document list view render');
+    // console.log(app.Documents.models);
     var that = this.listel;
     _.each(app.Documents.models, function (document) {
       var documentView = new app.DocumentTitleView({
