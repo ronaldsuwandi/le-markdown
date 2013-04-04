@@ -14,7 +14,7 @@ var server = http.createServer(app);
 app.configure(function() {
   // parses request body and populates req body
   app.use(express.bodyParser());
-  // checks req.body for HTTP method overrides  
+  // checks req.body for HTTP method overrides
   app.use(express.methodOverride());
   app.use(app.router); // perform route lookup based on url and HTTP method
   // serve static
@@ -36,35 +36,6 @@ server.listen(3000, function() {
 
 // TODO
 var folderLocation = 'e:/Dropbox/Workspace/le markdown files/';
-
-// REST api
-// GET  /api/files - list all files
-// POST /api/files - create new file
-// GET  /api/files/:id - get by file name/id?
-// PUT  /api/files/:id - update by file name/id?
-
-// List all files
-app.get('/api/files', function(req, res) {
-  fs.readdir(folderLocation, function (err, files) {
-    if (!err) {
-      var fileModels = [];
-
-      _.each(files, function(file) {
-        // open file
-        var path = folderLocation + '/' + file;
-        // replace backslash into slash and remove double slash
-        path = path.replace(/\\/, '/').replace(/\/{2}/,'/');
-        
-        // dummy file (no need to read content)
-        fileModels.push(createFileModel(path));
-      });
-      res.send(fileModels);
-    } else {
-      return console.log(err);
-    }
-  });
-});
-
 
 function createFileModel(filePath, readContent) {
   // filename
@@ -90,6 +61,39 @@ function createFileModel(filePath, readContent) {
   return fileModel;
 }
 
+/** REST api
+  * GET    /api/files - list all files
+  * POST   /api/files - create new file
+  * GET    /api/files/:id - get by file name/id?
+  * PUT    /api/files/:id - update by file name/id?
+  * DELETE /api/files:id - delete by file name/id?
+  */
+
+// TODO - folder support!
+
+// List all files
+app.get('/api/files', function(req, res) {
+  fs.readdir(folderLocation, function (err, files) {
+    if (!err) {
+      var fileModels = [];
+
+      _.each(files, function(file) {
+        // open file
+        var path = folderLocation + '/' + file;
+        // replace backslash into slash and remove double slash
+        path = path.replace(/\\/, '/').replace(/\/{2}/,'/');
+
+        // dummy file (no need to read content)
+        fileModels.push(createFileModel(path));
+      });
+      res.send(fileModels);
+    } else {
+      return console.log(err);
+    }
+  });
+});
+
+
 // read file content
 app.get('/api/files/:id', function(req, res) {
   return res.send(createFileModel(req.params.id, true));
@@ -97,9 +101,22 @@ app.get('/api/files/:id', function(req, res) {
 
 // update file content
 app.put('/api/files/:id', function(req, res) {
+  // TODO rename title/file id?
   // TODO check if local file is changed, if it is prompt user
   fs.writeFileSync(req.params.id, req.body.content, 'utf8');
 });
 
-// TODO delete, new file, rename title/filename
-// TODO id?
+app.delete('/api/files/:id', function(req, res) {
+  fs.unlinkSync(req.params.id);
+});
+
+app.post('/api/files', function(req, res) {
+  // TODO - this is rendundant with get/api/files
+  var path = folderLocation + '/' + req.body.title;
+  // replace backslash into slash and remove double slash
+  path = path.replace(/\\/, '/').replace(/\/{2}/,'/');
+
+  // TODO rename filename
+  // TODO handle duplicate file name at the moment it simply replace the file
+  fs.writeFileSync(path, req.body.content, 'utf8');
+});

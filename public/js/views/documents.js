@@ -49,7 +49,6 @@ app.DocumentListView = Backbone.View.extend({
   // DOM events
   events: {
     'click #new-document': 'newDocument',
-
   },
 
   initialize: function () {
@@ -71,8 +70,10 @@ app.DocumentListView = Backbone.View.extend({
     }, this);
   },
 
-  newDocument: function () {
-    app.Documents.create({title: 'untitled'});
+  newDocument: function (e) {
+    e.preventDefault(); // TODO do we need this?
+    var doc = new app.Document();
+    app.Documents.create(doc);
   },
 
   addOne: function (document) {
