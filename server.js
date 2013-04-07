@@ -119,3 +119,5 @@ app.post('/api/files', function(req, res) {
   fs.writeFileSync(path, req.body.content, 'utf8');
 });
 
+
+console.log(settings.folderLocation);
