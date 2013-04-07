@@ -3,7 +3,8 @@ var application_root = __dirname,
     http = require("http"),
     fs = require("fs"),
     _ = require("underscore"),
-    path = require("path");
+    path = require("path"),
+    settings = require("./settings");
 
 
 // express app
@@ -33,9 +34,6 @@ server.listen(3000, function() {
   console.log('Express server listening on port %d in %s mode',
     server.address().port, app.settings.env);
 });
-
-// TODO
-var folderLocation = 'e:/Dropbox/Workspace/le markdown files/';
 
 function createFileModel(filePath, readContent) {
   // filename
@@ -73,13 +71,13 @@ function createFileModel(filePath, readContent) {
 
 // List all files
 app.get('/api/files', function(req, res) {
-  fs.readdir(folderLocation, function (err, files) {
+  fs.readdir(settings.folderLocation, function (err, files) {
     if (!err) {
       var fileModels = [];
 
       _.each(files, function(file) {
         // open file
-        var path = folderLocation + '/' + file;
+        var path = settings.folderLocation + '/' + file;
         // replace backslash into slash and remove double slash
         path = path.replace(/\\/, '/').replace(/\/{2}/,'/');
 
@@ -120,3 +118,4 @@ app.post('/api/files', function(req, res) {
   // TODO handle duplicate file name at the moment it simply replace the file
   fs.writeFileSync(path, req.body.content, 'utf8');
 });
+
