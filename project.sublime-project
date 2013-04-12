@@ -3,8 +3,8 @@
 	[
 		{
 			"path": ".",
-			"file_exclude_patterns": ["project.sublime*", ".hgignore"],
-			"folder_exclude_patterns": [".hg"]
+			"file_exclude_patterns": ["project.sublime*", ".gitignore"],
+			"folder_exclude_patterns": [".git"]
 		}
   ]
 }
