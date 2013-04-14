@@ -1,0 +1,44 @@
+/* custom css */
+footer #footer {
+  text-align:center;
+}
+
+.content ul, 
+.content ol {
+  padding-left: 20px;
+}
+
+.content {
+  text-align: justify;
+}
+
+/* Make the header font size slightly smaller */
+.content h1,
+h1 {
+  font-size: 2em;
+}
+
+.content h2,
+h2 {
+  font-size: 1.65em;
+}
+
+.content h3,
+h3 {
+  font-size: 1.35em;
+}
+
+.content h4,
+h4 {
+  font-size: 1.125em;
+}
+
+.content h5,
+h5 {
+  font-size: 1em;
+}
+
+.content h6,
+h6{
+  font-size: 1em;
+}
