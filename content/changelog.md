@@ -9,7 +9,7 @@
 * Created basic mockup server to handle create/edit/delete
 * Server settings are hardcoded for now
 
-##### 0.1 - 2013/03/18
+##### 0.1.0 - 2013/03/18
 * Initial public release
 * Only uses HTML5 LocalStorage at the moment
 
