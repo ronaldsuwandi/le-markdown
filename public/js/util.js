@@ -12,7 +12,7 @@ define(function(require) {
       var date = new Date (Date.parse(dateString));
       var formatted = date.getFullYear() + '/' +
                       formatNumber(date.getMonth()) + '/' +
-                      formatNumber(date.getDay()) + ' ' +
+                      formatNumber(date.getDate()) + ' ' +
                       formatNumber(date.getHours()) + ':' +
                       formatNumber(date.getMinutes());
       return formatted;

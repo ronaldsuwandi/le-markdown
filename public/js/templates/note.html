@@ -1,17 +1,17 @@
 <div id='document-view'>
   <span class='clickable' title='Double click to edit'>
     <div class='title'>
-      <label id='title'><%= title %></label><br/>
+      <label id='title'><%= title() %></label><br/>
       <label id='modified-date'></label>
     </div>
     <div class='content'>
-      <label id='content'></label><br/>
+      <label id='content-value'></label><br/>
     </div>
   </span>
   <button class='standard' id='back'>BACK</button>
 </div>
 <div id='document-edit'>
-  <input id='edit-title' value="<%= title %>"></input><br/>
+  <!-- <input id='edit-title' value="<%= title %>"></input><br/> -->
   <textarea id='edit-content'><%= content %></textarea><br/>
   <div id='document-edit-operations'>
     <button class='standard' id='cancel'>CANCEL</button>

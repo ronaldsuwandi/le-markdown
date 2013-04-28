@@ -29,7 +29,6 @@ define(function(require) {
 
     render: function () {
       var modelJSON = this.model.toJSON();
-      // console.log(modelJSON);
       this.$el.html(this.template(modelJSON));
       // render modified date separately
       this.$('#modified-date').html(Util.formatDate(modelJSON.modifiedDate));
@@ -37,10 +36,15 @@ define(function(require) {
     },
 
     view: function (source) {
-      // hide the main document list view
-      noteListViewInstance.displayList(false);
-      // display the document view
-      var docview = new NoteView({model: this.model});
+      if (this.model.get('isDir')) {
+        Notes.relativeUrl = this.model.get('path') + this.model.get('filename');
+        Notes.fetch({reset:true});
+      } else {
+        // hide the main document list view
+        noteListViewInstance.displayList(false);
+        // display the document view
+        var docview = new NoteView({model: this.model});
+      }
     },
 
     clear: function (source) {
@@ -53,29 +57,50 @@ define(function(require) {
   var NoteListView = Backbone.View.extend({
     el: '#documents', // needed for new document button
     $listel: $('#document-list'),
+    $upButton: $('button#up'),
 
     // DOM events
     events: {
       'click #new-document': 'newDocument',
+      'click #new-folder': 'newFolder',
+      'click #up': 'up'
     },
 
     initialize: function () {
       Notes.on('add', this.addOne, this);
-      Notes.on('reset', this.addAll, this);
+      Notes.on('reset', this.reset, this);
       this.render();
     },
 
     render: function () {
+      var upper = this.upperFolder();
+      var value;
+      // only display up button if we are within a folder
+      if (upper === '') {
+        value = 'hidden';
+      } else {
+        value = 'visible';
+      }
+      this.$upButton.css('visibility',value);
       Notes.each(function (note) {
         this.createSingleItem(note);
       }, this);
 
     },
 
-    newDocument: function (e) {
+    newDocument: function(e) {
       e.preventDefault(); // TODO do we need this?
-      var doc = new Note();
+      var folder = Notes.relativeUrl;
+      folder = (folder === '') ? '/' : folder;
+      var doc = new Note({
+        path: folder + '/',
+        filename: ''
+      });
       Notes.create(doc);
+    },
+
+    newFolder: function(e) {
+      e.preventDefault();
     },
 
     addOne: function (note) {
@@ -86,6 +111,11 @@ define(function(require) {
     addAll: function () {
       console.log('add all');
       this.render();
+    },
+
+    reset: function() {
+      this.$listel.empty();
+      this.addAll();
     },
 
     createSingleItem: function(note) {
@@ -100,6 +130,26 @@ define(function(require) {
       } else {
         this.$el.addClass('hidden');
       }
+    },
+
+    up: function(e) {
+      e.preventDefault();
+
+      var upper = this.upperFolder();
+      if (upper !== '' ) {
+        // update relative url
+        Notes.relativeUrl = upper;
+        Notes.fetch({reset:true});
+      }
+    },
+
+    upperFolder: function() {
+      // the regex will extract the upper folder
+      // /abc/def/ => /abc/
+      // /abc/def/a => /abc/def/
+      var regex = /.*[\/|\\](?=.*[^\/|\\])/;
+      var result = regex.exec(Notes.relativeUrl);
+      return !result ? '' : result[0].trim();
     }
   });
 

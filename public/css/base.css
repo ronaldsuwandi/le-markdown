@@ -18,13 +18,13 @@ button {
 button.standard  {
   margin: 10px 0px 10px 0px;
   box-shadow:inset 0px 1px 0px 0px #f5978e;
-  
+
   background:linear-gradient(to bottom, #f24537 5%, #c62d1f 100%);
-  
+
   background-color:#f24537;
   border-radius:2px;
   border:1px solid #d02718;
-  
+
   display:inline-block;
   color:#ffffff;
   font-family:arial;
@@ -32,8 +32,13 @@ button.standard  {
   font-weight:bold;
   padding:6px 24px;
   text-decoration:none;
-  
+
   text-shadow:0px 1px 0px #810e05;
+}
+
+button#up {
+  /* disable the button by default */
+  visibility: hidden;
 }
 
 button:hover.standard {
@@ -73,22 +78,45 @@ footer {
   padding: 2px;
 }
 
-#document-list li #modified-date {
+#document-list li label#modified-date {
   position: absolute;
-  right: 30px;
   font-size: 50%;
+  right: 30px;
   top: 25%;
+  bottom:25%;
+  color: rgba(50, 50, 50, 0.5);
+}
+#document-view label#modified-date {
+  position: absolute;
+  font-size: 50%;
+  right: 0px;
+  top: 25%;
+  bottom:25%;
   color: rgba(50, 50, 50, 0.5);
 }
 
-#document-list li:hover {
+#document-list li label#folder {
+  position: absolute;
+  right:140px;
+  font-size:75%;
+  top: 12.5%;
+  bottom: 12.5%;
+  color: rgba(50, 50, 50, 0.5);
+}
+
+#document-list li .clickable {
+  min-height: 24px;
+}
+
+#document-list li .clickable:hover {
   background: rgba(200, 238, 255, 0.2);
 }
 
 .view {
   position: relative;
-
 }
+
+
 #document-list .destroy {
   /*display: none;*/
   position: absolute;
@@ -106,7 +134,7 @@ footer {
 #document-list li .destroy:after {
   /*content: '✖';*/
   /*use unicode to display : ✖ */
-  content: "\ \2716"; 
+  content: "\ \2716";
 }
 
 #document-list li:hover .destroy {
@@ -128,15 +156,7 @@ footer {
   position: relative;
 }
 
-label#modified-date {
-  position: absolute;
-  right: 0px;
-  font-size: 50%;
-  /*top: 25%;*/
-  top: 25%;
-  bottom:25%;
-  color: rgba(50, 50, 50, 0.5);
-}
+
 
 .content {
   padding: 5px;

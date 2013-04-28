@@ -1,6 +1,7 @@
 <div class='view'>
   <div class='clickable'>
-    <label><%= title %></label>
+    <label><%= title() %></label>
+    <label id='folder'><%= isDir ? '&#x25CF;' : '' %></label>
     <label id='modified-date'></label>
   </div>
   <button class='destroy'></button>

@@ -14,8 +14,8 @@ define(function(require) {
   // DOM element for a document item
   var NoteView = Backbone.View.extend({
     el: '#document',
-    // template: _.template($('#document-template').html()),
     template: _.template(noteTemplate),
+
     events: {
       'dblclick .clickable': 'toggleView',
       'click #back': 'showDocumentList',
@@ -37,16 +37,13 @@ define(function(require) {
     },
 
     toggleView: function () {
-      this.edit.toggleClass('hidden');
-      this.view.toggleClass('hidden');
+      this.$edit.toggleClass('hidden');
+      this.$view.toggleClass('hidden');
     },
 
     saveDoc: function () {
-      var value = this.titleInput.val().trim();
-      if (value) {
-        this.model.set({title: value});
-      }
-      var value = this.titleContent.val().trim();
+      var value = this.$content.val().trim();
+      console.log(value);
       if (value) {
         this.model.set({content: value});
       }
@@ -55,7 +52,14 @@ define(function(require) {
       // model is the same, the date modified is chagned, thus re-render
       // will occur
       this.model.set({modifiedDate: new Date()});
-      this.model.save();
+      this.model.save(null,{
+        error: function() {
+          console.log('Error saving');
+        },
+        success: function() {
+          console.log('Success save from model');
+        }
+      });
     },
 
     showDocumentList: function () {
@@ -73,20 +77,21 @@ define(function(require) {
       this.$el.html(this.template(modelJSON));
       this.$el.removeClass('hidden');
 
+
       // render markdown here
-      this.$('#content').html(MarkdownConverter.makeHtml(modelJSON.content));
+      var $contentValue = $('#content-value');
+      $contentValue.html(MarkdownConverter.makeHtml(modelJSON.content));
 
       // set the id class
-      this.edit = $('#document-edit');
-      this.view = $('#document-view');
-      this.titleInput = this.$('#edit-title');
-      this.titleContent = this.$('#edit-content');
+      this.$edit = $('#document-edit');
+      this.$view = $('#document-view');
+      this.$content = $('#edit-content');
 
       // render modified date separately
       this.$('#modified-date').html(Util.formatDate(modelJSON.modifiedDate));
 
       // hide edit
-      this.edit.toggleClass('hidden');
+      this.$edit.toggleClass('hidden');
     }
   });
 

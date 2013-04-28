@@ -9,8 +9,12 @@ define(function(require) {
 
     // Save all document under lemarkdown-documents namespace
     // localStorage: new Backbone.LocalStorage('lemarkdown-documents')
-    url: '/api/files'
+    url: function() {
+      return '/api/folder/' + this.relativeUrl;
+    },
 
+    // subfolder url will be stored here
+    relativeUrl: ''
   });
 
   return new NotesCollection();
