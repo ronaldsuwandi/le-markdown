@@ -5,9 +5,12 @@ it supports create/edit/delete node (folder location is hardcoded in server.js f
 and there is no checking if whether file is already exists; it simply overwrites it.
 Also no folder support yet)
 
+Subfolder is now supported (create/edit/delete folder will be added on later)
+
+
+
 Online live demo (0.1 - client-only using LocalStorage) can be accessed at
 [http://bit.ly/16G2lUa](http://bit.ly/16G2lUa)
-
 
 # Changelog
 
