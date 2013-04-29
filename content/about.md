@@ -1,7 +1,8 @@
 # le markdown
-le markdown is a simple online text editor (plain text only) with [Markdown]
-(http://daringfireball.net/projects/markdown/) support. At present it has a simple 
-mockup server (NodeJS based) that performs basic create/edit/delete
+le markdown is a simple online text editor (plain text only) with 
+[Markdown](http://daringfireball.net/projects/markdown/) support. 
+At present it has a simple mockup server (NodeJS based) that performs 
+basic create/edit/delete. Now it has folder support
 
 Libraries used:
 
