@@ -174,6 +174,8 @@ function sort(fileModels, callback) {
 
 /** REST api
   * GET    /api/folder/* - list all files (subfolder is also included)
+  * POST   /api/folder/* - create new folder
+  *
   * GET    /api/file/:path - get by file path
   * POST   /api/file/* - create new file
   * PUT    /api/file/* - update file
@@ -234,20 +236,58 @@ app.put('/api/file/*', function(req, res) {
 });
 
 app.delete('/api/file/*', function(req, res) {
-  var fullPath = settings.folderLocation + '/' + req.params[0];
-  fs.unlink(fullPath, function(err) {
-    if (err) return res.send(err);
-    console.log('File deleted ['+fullPath+']');
+  var fullPath = replaceSlashes(settings.folderLocation + '/' + req.params[0]);
+  async.waterfall([
+    function stats(callback) {
+      fs.stat(fullPath, function(err, stats) {
+        if (err) return callback(err);
+        callback(null, stats);
+      });
+    },
+
+  ], function(err, stats) {
+    console.log(stats);
+    if (stats.isDirectory()) {
+      fs.rmdir(fullPath, function(err) {
+        if (err) return res.send('error');
+        console.log('Folder deleted ['+fullPath+']');
+      });
+    } else {
+      fs.unlink(fullPath, function(err) {
+        if (err) return res.send(err);
+        console.log('File deleted ['+fullPath+']');
+      });
+    }
   });
 });
 
 app.post('/api/file/*', function(req, res) {
-  var fileName = settings.newFileName;
-  var absolutePath = replaceSlashes(settings.folderLocation + '/' +
-                                    req.params[0] + '/');
+  var isNewFolder = req.body.filename !== '';
+  var fileName = isNewFolder ? req.body.filename : settings.newFileName;
+
+  console.log(req.body);
+
+  // var absolutePath = replaceSlashes(settings.folderLocation + '/' +
+  //                                   req.params[0] + '/');
+
+  var absolutePath;
+  var extensionRegex;
+  var extension;
+
   // TODO check new filename + extension for regex issues
   // e.g. invalid filename, slash included, etc
-  var extensionRegex = settings.newFileNameExtension.replace('.','\\.');
+  if (req.body.isDir) {
+    // exclude filename
+    absolutePath = replaceSlashes(settings.folderLocation + '/' + req.body.path);
+    extensionRegex = '';
+    extension = '';
+  } else {
+    absolutePath = replaceSlashes(settings.folderLocation + '/' +
+                                  req.params[0] + '/');
+    extensionRegex = settings.newFileNameExtension.replace('.','\\.');
+    extension = settings.newFileNameExtension;
+  }
+
   var regexString = [];
   regexString.push(fileName);
   regexString.push(extensionRegex);
@@ -258,13 +298,13 @@ app.post('/api/file/*', function(req, res) {
   regexString.push(')');
   console.log(regexString.join(''));
 
+
   // final regex form: dummy\.txt|(dummy-)([\d]+)(\.txt)
   var regex = new RegExp(regexString.join(''));
 
   // regex for original file form: dummy\.txt
   // this is to check if the original file exists in the first place
   var originalName = new RegExp(fileName + extensionRegex);
-
   async.waterfall([
     function readDir(callback) {
       fs.readdir(absolutePath, function(err, files) {
@@ -284,7 +324,7 @@ app.post('/api/file/*', function(req, res) {
         // if original file name is not exists (no point creating dummy-4.txt
         // if dummy.txt itself does not exists)
         if (originalFileExists) {
-          var largest = 1;
+          var largest = 0;
           // find largest index (eg. dummy-10.txt will return 10)
           var regexIndex = /(?:.*-)([\d]+)/;
           async.each(results, function(file, callback) {
@@ -298,28 +338,43 @@ app.post('/api/file/*', function(req, res) {
             callback(null);
           }, function(err) {
             largest++;
-            callback(err, fileName + '-' + largest +
-                     settings.newFileNameExtension);
+            callback(err, fileName + '-' + largest + extension);
           });
         } else {
-          callback(null, fileName + settings.newFileNameExtension);
+          callback(null, fileName + extension);
         }
       });
     },
     function createFile(finalName, callback) {
-      fs.writeFile(absolutePath + finalName,
-                   req.body.content,
-                   'utf8',
-                   function(err) {
-        // if (err) return res.send(err);
-        if (err) return callback(err);
-        callback(null, finalName);
-      });
+      if (req.body.isDir) {
+        // create folder
+        fs.mkdir(absolutePath + finalName, function(err) {
+          if (err) return callback(err);
+          callback(null, finalName);
+        });
+      } else {
+        // create file
+        fs.writeFile(absolutePath + finalName,
+                     req.body.content,
+                     'utf8',
+                     function(err) {
+          if (err) return callback(err);
+          callback(null, finalName);
+        });
+      }
     }
   ], function(err, finalName) {
+    if (err) return res.send(err);
     req.body.filename = finalName;
-    console.log('File created ['+absolutePath + finalName +']');
+    if (req.body.isDir) {
+      req.body.content = finalName;
+      console.log('Folder created ['+absolutePath + finalName +']');
+    } else {
+      console.log('File created ['+absolutePath + finalName +']');
+    }
     console.log(req.body);
+
+
     res.send(req.body);
   });
 });

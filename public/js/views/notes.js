@@ -48,7 +48,17 @@ define(function(require) {
     },
 
     clear: function (source) {
-      this.model.destroy();
+      this.model.destroy({
+        error: function() {
+          console.log('Error delete');
+          alert('Error deleting folder');
+          Notes.fetch({reset:true});
+        },
+        success: function() {
+          console.log('Success delete');
+        }
+
+      });
     }
   });
 
@@ -101,6 +111,22 @@ define(function(require) {
 
     newFolder: function(e) {
       e.preventDefault();
+      var folderName = prompt("Enter folder name", "Folder");
+      if (folderName === null || folderName.trim() === "") {
+        // ignore
+        return;
+      }
+
+      folderName = folderName.trim();
+      var folder = Notes.relativeUrl;
+      folder = (folder === '') ? '/' : folder;
+      var doc = new Note({
+        path: folder + '/',
+        filename: folderName,
+        isDir: true
+      });
+      console.log(doc);
+      Notes.create(doc);
     },
 
     addOne: function (note) {
