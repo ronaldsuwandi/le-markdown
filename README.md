@@ -34,6 +34,9 @@ Simply update `settings.js` as required and run the application by executing
 
 ## Changelog
 
+##### 0.1.3 - 2013/05/05
+* Add/delete folder is now supported
+
 ##### 0.1.2 - 2013/03/18
 * Modularised client using RequireJS
 * Added settings.js file to handle basic server settings
